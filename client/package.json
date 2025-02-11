@@ -1,0 +1,15 @@
+{
+  "name": "vscode-puya-py-client",
+  "displayName": "vscode-puya-py-client",
+  "description": "vscode-puya-py-client",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.97.0"
+  },
+  "scripts": {
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.97.0",
+    "@types/mocha": "^10.0.10"
+  }
+}
