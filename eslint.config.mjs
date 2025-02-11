@@ -1,28 +1,37 @@
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
+import prettier from 'eslint-config-prettier'
 
-export default [{
-    files: ["**/*.ts"],
-}, {
-    plugins: {
-        "@typescript-eslint": typescriptEslint,
-    },
-
+export default tseslint.config(
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
+  {
+    ignores: ['dist/**', 'out/**'],
+  },
+  {
+    files: ['**/*.{js,ts}'],
     languageOptions: {
-        parser: tsParser,
-        ecmaVersion: 2022,
-        sourceType: "module",
+      parser: tseslint.parser,
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      globals: {
+        browser: true,
+      },
     },
-
     rules: {
-        "@typescript-eslint/naming-convention": ["warn", {
-            selector: "import",
-            format: ["camelCase", "PascalCase"],
-        }],
-
-        curly: "warn",
-        eqeqeq: "warn",
-        "no-throw-literal": "warn",
-        semi: "warn",
+      'no-console': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          ignoreRestSiblings: true,
+          argsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
-}];
+  },
+  prettier
+)
