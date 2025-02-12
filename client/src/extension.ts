@@ -4,19 +4,14 @@
  * ------------------------------------------------------------------------------------------ */
 
 import * as path from 'path'
-import { workspace, ExtensionContext, window } from 'vscode'
+import { workspace, ExtensionContext } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 
 let client: LanguageClient
 
 export function activate(context: ExtensionContext) {
-  // Add activation logging
-  console.log('Activating PuyaPy Language Server extension...')
-  window.showInformationMessage('PuyaPy Language Server is now active')
-
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(path.join('dist', 'server', 'server.js'))
-  console.log(`Server module path: ${serverModule}`)
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used

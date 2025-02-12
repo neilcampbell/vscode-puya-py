@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "commonjs",
     "target": "ES2022",
     "lib": ["ES2022"],
     "sourceMap": true,
@@ -11,5 +11,6 @@
     // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
     // "noUnusedParameters": true,  /* Report errors on unused parameters. */
   },
-  "include": ["client/**/*.ts", "server/**/*.ts"]
+  "include": ["client/**/*.ts", "server/**/*.ts"],
+  "exclude": ["**/node_modules", ".vscode-test"]
 }

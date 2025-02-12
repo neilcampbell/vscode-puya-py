@@ -1,6 +1,7 @@
 {
   "name": "vscode-puya-py",
   "displayName": "vscode-puya-py",
+  "publisher": "pat-dev",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -47,21 +48,23 @@
     "package": "npm run check-types && npm run lint && node esbuild.js --production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "pretest": "npm run lint&& npm run compile-tests",
     "check-types": "tsc --noEmit",
-    "lint": "eslint client/src",
-    "test": "vscode-test"
+    "lint": "eslint client server",
+    "test": "cross-env CODE_TESTS_WORKSPACE=\"client/testFixture\" node \"out/client/src/test/runTest\""
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
-    "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
+    "cross-env": "^7.0.3",
     "esbuild": "^0.24.2",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
+    "mocha": "^11.1.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.0"
