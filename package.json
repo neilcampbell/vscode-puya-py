@@ -4,20 +4,39 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.97.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:python"
+  ],
+  "main": "./dist/client/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "vscode-puya-py.helloWorld",
-        "title": "Hello World"
+    "configuration": {
+      "type": "object",
+      "title": "PuyaPy Language Server configuration",
+      "properties": {
+        "pupapyLsp.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "pupapyLsp.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server."
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

@@ -9,8 +9,9 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
+      "outFiles": ["${workspaceRoot}/dist/client/extension.js", "${workspaceRoot}/dist/server/server.js"],
+      "autoAttachChildProcesses": true,
       "preLaunchTask": "${defaultBuildTask}"
     }
   ]

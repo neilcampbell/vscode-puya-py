@@ -1,26 +1,53 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode'
+/* --------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ * ------------------------------------------------------------------------------------------ */
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  // eslint-disable-next-line no-console
-  console.log('Congratulations, your extension "vscode-puya-py" is now active!')
+import * as path from 'path'
+import { workspace, ExtensionContext, window } from 'vscode'
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  const disposable = vscode.commands.registerCommand('vscode-puya-py.helloWorld', () => {
-    // The code you place here will be executed every time your command is executed
-    // Display a message box to the user
-    vscode.window.showInformationMessage('Hello World from vscode-puya-py!')
-  })
+let client: LanguageClient
 
-  context.subscriptions.push(disposable)
+export function activate(context: ExtensionContext) {
+  // Add activation logging
+  console.log('Activating PuyaPy Language Server extension...')
+  window.showInformationMessage('PuyaPy Language Server is now active')
+
+  // The server is implemented in node
+  const serverModule = context.asAbsolutePath(path.join('dist', 'server', 'server.js'))
+  console.log(`Server module path: ${serverModule}`)
+
+  // If the extension is launched in debug mode then the debug server options are used
+  // Otherwise the run options are used
+  const serverOptions: ServerOptions = {
+    run: { module: serverModule, transport: TransportKind.ipc },
+    debug: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+    },
+  }
+
+  // Options to control the language client
+  const clientOptions: LanguageClientOptions = {
+    // Register the server for plain text documents
+    documentSelector: [{ language: 'python' }],
+    synchronize: {
+      // Notify the server about file changes to '.clientrc files contained in the workspace
+      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
+    },
+  }
+
+  // Create the language client and start the client.
+  client = new LanguageClient('pupapyLsp', 'PuyaPy Language Server', serverOptions, clientOptions)
+
+  // Start the client. This will also launch the server
+  client.start()
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate(): Thenable<void> | undefined {
+  if (!client) {
+    return undefined
+  }
+  return client.stop()
+}
