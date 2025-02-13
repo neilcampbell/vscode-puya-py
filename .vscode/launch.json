@@ -13,7 +13,7 @@
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
       "outFiles": ["${workspaceRoot}/dist/client/extension.js", "${workspaceRoot}/dist/server/server.js"],
       "autoAttachChildProcesses": true,
-      "preLaunchTask": "${defaultBuildTask}"
+      "preLaunchTask": "npm: build-dev"
     },
     {
       "name": "Debug Test",
@@ -26,7 +26,7 @@
         "${workspaceRoot}/client/testFixture"
       ],
       "outFiles": ["${workspaceRoot}/out/client/src/test/**/*.js"],
-      "preLaunchTask": "npm: watch-tests"
+      "preLaunchTask": "npm: pretest"
     }
   ]
 }

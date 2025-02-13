@@ -1,7 +1,6 @@
 const esbuild = require('esbuild')
 
 const production = process.argv.includes('--production')
-const watch = process.argv.includes('--watch')
 
 /**
  * @type {import('esbuild').Plugin}
@@ -44,12 +43,8 @@ async function buildClient() {
       esbuildProblemMatcherPlugin,
     ],
   })
-  if (watch) {
-    await ctx.watch()
-  } else {
-    await ctx.rebuild()
-    await ctx.dispose()
-  }
+  await ctx.rebuild()
+  await ctx.dispose()
 }
 
 async function buildServer() {
@@ -69,12 +64,8 @@ async function buildServer() {
       esbuildProblemMatcherPlugin,
     ],
   })
-  if (watch) {
-    await ctx.watch()
-  } else {
-    await ctx.rebuild()
-    await ctx.dispose()
-  }
+  await ctx.rebuild()
+  await ctx.dispose()
 }
 
 main().catch((e) => {
