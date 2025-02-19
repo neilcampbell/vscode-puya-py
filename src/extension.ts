@@ -1,13 +1,7 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
-
 import { workspace, ExtensionContext, window, TextDocument, Uri, WorkspaceFolder } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import { PythonExtension } from '@vscode/python-extension'
 
-// Map to store language clients by workspace folder name
 const clients: Map<string, LanguageClient> = new Map()
 
 type PythonConfig = {
@@ -38,7 +32,6 @@ export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig
 async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
   const client = clients.get(workspaceFolder.name)
   if (client) {
-    // Stop the existing client
     await client.stop()
     clients.delete(workspaceFolder.name)
 
@@ -47,7 +40,6 @@ async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
 }
 
 async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
-  // Check if client already exists for this workspace folder
   if (clients.has(workspaceFolder.name)) {
     return
   }
@@ -60,7 +52,6 @@ async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   }
   // TODO: handle setting from settings.json
 
-  // Setup the language server using poetry
   const serverOptions: ServerOptions = {
     command: pythonConfig.pythonPath,
     args: ['-m', 'puyapy.lsp'],
@@ -72,29 +63,23 @@ async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     },
   }
 
-  // Options to control the language client
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
       {
         language: 'python',
-        pattern: `${workspaceFolder.uri.fsPath}/**/*`, // Only match files in this workspace folder
+        pattern: `${workspaceFolder.uri.fsPath}/**/*`,
       },
     ],
-    synchronize: {
-      // TODO: restart the server if the configuration changes
-    },
-    workspaceFolder: workspaceFolder, // Specify the workspace folder this client is for
+    workspaceFolder: workspaceFolder,
   }
 
-  // Create the language client with unique ID and name for this workspace
   const client = new LanguageClient(
-    `pupapyLsp-${workspaceFolder.name}`, // Unique ID per workspace
-    `PuyaPy Language Server - ${workspaceFolder.name}`, // Unique name per workspace
+    `pupapyLsp-${workspaceFolder.name}`,
+    `PuyaPy Language Server - ${workspaceFolder.name}`,
     serverOptions,
     clientOptions
   )
 
-  // Store the client in our map
   clients.set(workspaceFolder.name, client)
 
   // Start the client. This will also launch the server
@@ -118,7 +103,6 @@ async function onPythonEnvironmentChangedHandler(resource: Uri) {
 }
 
 export async function activate(context: ExtensionContext) {
-  // Setup Python extension API
   const pythonApi = await PythonExtension.api()
 
   // Handle interpreter changes
@@ -131,7 +115,7 @@ export async function activate(context: ExtensionContext) {
     })
   )
 
-  // Handle already opened Python documents first
+  // Handle already opened Python documents
   if (window.activeTextEditor?.document.languageId === 'python') {
     await onDocumentOpenedHandler(window.activeTextEditor.document)
   }
@@ -160,7 +144,6 @@ export async function activate(context: ExtensionContext) {
 }
 
 export async function deactivate(): Promise<void> {
-  // Stop all clients
   const promises = Array.from(clients.values()).map((client) => client.stop())
   await Promise.all(promises)
   clients.clear()
