@@ -17,7 +17,7 @@ type PythonConfig = {
   pythonPath?: string
 }
 
-export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig | undefined> {
+async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig | undefined> {
   const api = await PythonExtension.api()
   const environment = await api?.environments.resolveEnvironment(api?.environments.getActiveEnvironmentPath(resource))
   if (!environment) {
