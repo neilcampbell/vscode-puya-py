@@ -1,4 +1,4 @@
-import { window, WorkspaceFolder } from 'vscode'
+import { window, workspace, WorkspaceFolder } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import { exec } from 'child_process'
 import { PythonConfig, getPythonEnvironment } from './python-environment'
@@ -71,13 +71,29 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     return
   }
 
-  const startServerCommand = await findStartServerCommand(pythonConfig)
+  const config = workspace.getConfiguration('puyapy', workspaceFolder.uri)
+  let languageServerPath = config.get<string>('languageServerPath')
+
+  // Resolve ${workspaceFolder} if present
+  // Doesn't seems to be a better way to handle this
+  // https://github.com/microsoft/vscode/issues/46471
+  if (languageServerPath && languageServerPath.includes('${workspaceFolder}')) {
+    languageServerPath = languageServerPath.replace('${workspaceFolder}', workspaceFolder.uri.fsPath)
+  }
+
+  let startServerCommand: ServerCommand | undefined
+  if (languageServerPath) {
+    startServerCommand = {
+      command: 'puyapy-lsp',
+    }
+  } else {
+    startServerCommand = await findStartServerCommand(pythonConfig)
+  }
+
   if (!startServerCommand) {
     window.showErrorMessage('PuyaPy language server is not installed in the current environment.')
     return
   }
-
-  // TODO: handle setting from settings.json
 
   const serverOptions: ServerOptions = {
     command: startServerCommand.command,
@@ -87,6 +103,7 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
       env: {
         VIRTUAL_ENV: `${pythonConfig.envPath}`,
       },
+      ...(languageServerPath && { cwd: languageServerPath }),
     },
   }
 
@@ -107,10 +124,13 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     clientOptions
   )
 
-  clients.set(workspaceFolder.name, client)
-
-  // Start the client. This will also launch the server
-  await client.start()
+  try {
+    // Start the client. This will also launch the server
+    await client.start()
+    clients.set(workspaceFolder.name, client)
+  } catch {
+    window.showErrorMessage('Failed to start PuyaPy language server.')
+  }
 }
 
 export async function stopAllLanguageServers(): Promise<void> {
