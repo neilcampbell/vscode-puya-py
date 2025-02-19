@@ -16,7 +16,7 @@
   "main": "./dist/extension.js",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build-dev": "npm-run-all build:* && node esbuild.js",
+    "build-dev": "npm run build:clean && npm run build:check-types && node esbuild.js",
     "build-prod": "npm-run-all build:* && node esbuild.js --production",
     "build:clean": "rimraf dist",
     "build:check-types": "tsc --noEmit",

@@ -32,7 +32,7 @@ export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig
   }
 }
 
-async function startLanguageServer(document: TextDocument, _context: ExtensionContext) {
+async function startLanguageServer(document: TextDocument) {
   if (client) {
     return
   }
@@ -45,6 +45,7 @@ async function startLanguageServer(document: TextDocument, _context: ExtensionCo
     // TODO: handle env
     return
   }
+  // TODO: handle setting from settings.json
 
   // Setup the language server using poetry
   const serverOptions: ServerOptions = {
@@ -62,9 +63,7 @@ async function startLanguageServer(document: TextDocument, _context: ExtensionCo
   const clientOptions: LanguageClientOptions = {
     documentSelector: [{ language: 'python' }],
     synchronize: {
-      // TODO: check this
       // TODO: restart the server if the configuration changes
-      fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
     },
   }
 
@@ -78,13 +77,13 @@ async function startLanguageServer(document: TextDocument, _context: ExtensionCo
 export async function activate(context: ExtensionContext) {
   // Handle already opened Python documents first
   if (window.activeTextEditor?.document.languageId === 'python') {
-    await startLanguageServer(window.activeTextEditor.document, context)
+    await startLanguageServer(window.activeTextEditor.document)
   }
 
   // Setup handler for newly opened Python documents
   const disposable = workspace.onDidOpenTextDocument(async (document: TextDocument) => {
     if (document.languageId === 'python') {
-      await startLanguageServer(document, context)
+      await startLanguageServer(document)
     }
   })
 
