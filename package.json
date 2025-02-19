@@ -14,31 +14,6 @@
     "onLanguage:python"
   ],
   "main": "./dist/client/extension.js",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "PuyaPy Language Server configuration",
-      "properties": {
-        "pupapyLsp.maxNumberOfProblems": {
-          "scope": "resource",
-          "type": "number",
-          "default": 100,
-          "description": "Controls the maximum number of problems produced by the server."
-        },
-        "pupapyLsp.trace.server": {
-          "scope": "window",
-          "type": "string",
-          "enum": [
-            "off",
-            "messages",
-            "verbose"
-          ],
-          "default": "off",
-          "description": "Traces the communication between VS Code and the language server."
-        }
-      }
-    }
-  },
   "scripts": {
     "check-types": "tsc --noEmit",
     "build-dev": "npm-run-all build:* && node esbuild.js",
@@ -46,8 +21,8 @@
     "build:clean": "rimraf dist",
     "build:check-types": "tsc --noEmit",
     "build:lint": "npm run lint",
-    "lint": "eslint client server",
-    "lint:fix": "eslint client server --fix",
+    "lint": "eslint client",
+    "lint:fix": "eslint client --fix",
     "pretest": "npm-run-all pretest:*",
     "pretest:build-extension": "npm run build-dev",
     "pretest:build-tests": "tsc -p . --outDir out",

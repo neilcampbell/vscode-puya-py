@@ -3,32 +3,67 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
-import * as path from 'path'
-import { workspace, ExtensionContext } from 'vscode'
+import { workspace, ExtensionContext, window, TextDocument, Uri } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
+import { PythonExtension } from '@vscode/python-extension'
 
 let client: LanguageClient
 
-export function activate(context: ExtensionContext) {
-  // The server is implemented in node
-  const serverModule = context.asAbsolutePath(path.join('dist', 'server', 'server.js'))
+type PythonConfig = {
+  /*
+   * Path to the Python environment, undefined if global
+   */
+  envPath?: string
+  /*
+   * Path to the Python executable, undefined if no executable found
+   */
+  pythonPath?: string
+}
 
-  // If the extension is launched in debug mode then the debug server options are used
-  // Otherwise the run options are used
+export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig | undefined> {
+  const api = await PythonExtension.api()
+  const environment = await api?.environments.resolveEnvironment(api?.environments.getActiveEnvironmentPath(resource))
+  if (!environment) {
+    return undefined
+  }
+  return {
+    envPath: environment.environment?.folderUri.fsPath,
+    pythonPath: environment.executable.uri?.fsPath,
+  }
+}
+
+async function startLanguageServer(document: TextDocument, _context: ExtensionContext) {
+  if (client) {
+    return
+  }
+
+  const workspaceFolder = workspace.getWorkspaceFolder(document.uri)
+  if (!workspaceFolder) return
+
+  const pythonConfig = await getPythonEnvironment(workspaceFolder!.uri)
+  if (!pythonConfig || !pythonConfig.envPath || !pythonConfig.pythonPath) {
+    // TODO: handle env
+    return
+  }
+
+  // Setup the language server using poetry
   const serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
-    debug: {
-      module: serverModule,
-      transport: TransportKind.ipc,
+    command: pythonConfig.pythonPath,
+    args: ['-m', 'puyapy.lsp'],
+    transport: TransportKind.stdio,
+    options: {
+      env: {
+        VIRTUAL_ENV: `${pythonConfig.envPath}`,
+      },
     },
   }
 
   // Options to control the language client
   const clientOptions: LanguageClientOptions = {
-    // Register the server for plain text documents
     documentSelector: [{ language: 'python' }],
     synchronize: {
-      // Notify the server about file changes to '.clientrc files contained in the workspace
+      // TODO: check this
+      // TODO: restart the server if the configuration changes
       fileEvents: workspace.createFileSystemWatcher('**/.clientrc'),
     },
   }
@@ -37,7 +72,23 @@ export function activate(context: ExtensionContext) {
   client = new LanguageClient('pupapyLsp', 'PuyaPy Language Server', serverOptions, clientOptions)
 
   // Start the client. This will also launch the server
-  client.start()
+  await client.start()
+}
+
+export async function activate(context: ExtensionContext) {
+  // Handle already opened Python documents first
+  if (window.activeTextEditor?.document.languageId === 'python') {
+    await startLanguageServer(window.activeTextEditor.document, context)
+  }
+
+  // Setup handler for newly opened Python documents
+  const disposable = workspace.onDidOpenTextDocument(async (document: TextDocument) => {
+    if (document.languageId === 'python') {
+      await startLanguageServer(document, context)
+    }
+  })
+
+  context.subscriptions.push(disposable)
 }
 
 export function deactivate(): Thenable<void> | undefined {

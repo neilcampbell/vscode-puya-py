@@ -11,7 +11,7 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-      "outFiles": ["${workspaceRoot}/dist/client/extension.js", "${workspaceRoot}/dist/server/server.js"],
+      "outFiles": ["${workspaceRoot}/dist/client/extension.js"],
       "autoAttachChildProcesses": true,
       "preLaunchTask": "npm: build-dev"
     },

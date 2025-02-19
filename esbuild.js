@@ -23,7 +23,7 @@ const esbuildProblemMatcherPlugin = {
 }
 
 async function main() {
-  await Promise.all([buildClient(), buildServer()])
+  await Promise.all([buildClient()])
 }
 
 async function buildClient() {
@@ -36,27 +36,6 @@ async function buildClient() {
     sourcesContent: false,
     platform: 'node',
     outfile: 'dist/client/extension.js',
-    external: ['vscode'],
-    logLevel: 'silent',
-    plugins: [
-      /* add to the end of plugins array */
-      esbuildProblemMatcherPlugin,
-    ],
-  })
-  await ctx.rebuild()
-  await ctx.dispose()
-}
-
-async function buildServer() {
-  const ctx = await esbuild.context({
-    entryPoints: ['server/src/server.ts'],
-    bundle: true,
-    format: 'cjs',
-    minify: production,
-    sourcemap: !production,
-    sourcesContent: false,
-    platform: 'node',
-    outfile: 'dist/server/server.js',
     external: ['vscode'],
     logLevel: 'silent',
     plugins: [
