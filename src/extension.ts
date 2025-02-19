@@ -1,6 +1,7 @@
 import { workspace, ExtensionContext, window, TextDocument, Uri, WorkspaceFolder } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import { PythonExtension } from '@vscode/python-extension'
+import { exec } from 'child_process'
 
 const clients: Map<string, LanguageClient> = new Map()
 
@@ -29,6 +30,37 @@ export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig
   }
 }
 
+async function ensurePuyapyIsInstalled(config: PythonConfig): Promise<boolean> {
+  if (!config.pythonPath || !config.envPath) {
+    return false
+  }
+
+  const checkModuleCmd = `"${config.pythonPath}" -c "import puyapy"`
+  try {
+    await new Promise<void>((resolve, reject) => {
+      exec(
+        checkModuleCmd,
+        {
+          env: {
+            VIRTUAL_ENV: config.envPath,
+          },
+        },
+        (error: Error | null) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve()
+          }
+        }
+      )
+    })
+    return true
+  } catch {
+    window.showErrorMessage('PuyaPy is not installed in the current environment.')
+    return false
+  }
+}
+
 async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
   const client = clients.get(workspaceFolder.name)
   if (client) {
@@ -50,6 +82,11 @@ async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     // TODO: handle global env
     return
   }
+
+  if (!(await ensurePuyapyIsInstalled(pythonConfig))) {
+    return
+  }
+
   // TODO: handle setting from settings.json
 
   const serverOptions: ServerOptions = {
