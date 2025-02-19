@@ -6,7 +6,6 @@
     "dbaeumer.vscode-eslint",
     "connor4312.esbuild-problem-matchers",
     "ms-vscode.extension-test-runner",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint"
+    "esbenp.prettier-vscode"
   ]
 }

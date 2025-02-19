@@ -11,7 +11,7 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-      "outFiles": ["${workspaceRoot}/dist/client/extension.js"],
+      "outFiles": ["${workspaceRoot}/dist/extension.js"],
       "autoAttachChildProcesses": true,
       "preLaunchTask": "npm: build-dev"
     },
@@ -22,10 +22,10 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/out/client/src/test/index",
-        "${workspaceRoot}/client/testFixture"
+        "--extensionTestsPath=${workspaceRoot}/out/src/test/index",
+        "${workspaceRoot}/testFixture"
       ],
-      "outFiles": ["${workspaceRoot}/out/client/src/test/**/*.js"],
+      "outFiles": ["${workspaceRoot}/out/src/test/**/*.js"],
       "preLaunchTask": "npm: pretest"
     }
   ]

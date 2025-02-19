@@ -6,7 +6,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
-    ignores: ['dist/**', 'out/**', 'esbuild.js', '**/node_modules'],
+    ignores: ['dist/**', 'out/**', 'esbuild.js', '.vscode-test/**'],
   },
   {
     files: ['**/*.{js,ts}'],
