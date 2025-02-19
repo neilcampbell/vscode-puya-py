@@ -3,10 +3,7 @@ import { PythonExtension } from '@vscode/python-extension'
 
 export type PythonConfig = {
   id: string
-  /*
-   * Path to the Python environment, undefined if global
-   */
-  envPath?: string
+  envPath: string
   /*
    * Path to the Python executable, undefined if no executable found
    */

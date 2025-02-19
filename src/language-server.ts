@@ -10,10 +10,10 @@ type ServerCommand = {
   args?: string[]
 }
 
-async function testLspCandidate(command: string, options?: { env?: NodeJS.ProcessEnv }): Promise<boolean> {
+async function tryToRunCommand(command: string): Promise<boolean> {
   try {
     await new Promise<void>((resolve, reject) => {
-      exec(command, { env: options?.env }, (error: Error | null) => {
+      exec(command, (error: Error | null) => {
         if (error) {
           reject(error)
         } else {
@@ -32,18 +32,16 @@ async function findStartServerCommand(config: PythonConfig): Promise<ServerComma
     return undefined
   }
 
-  // Try first candidate: python -m puyapy.lsp --version
-  const firstCandidate = `"${config.pythonPath}" -m puyapy.lsp --version`
-  if (await testLspCandidate(firstCandidate, { env: { VIRTUAL_ENV: config.envPath } })) {
+  const startWithPython = `"${config.pythonPath}" -m puyapy.lsp --version`
+  if (await tryToRunCommand(startWithPython)) {
     return {
       command: config.pythonPath,
       args: ['-m', 'puyapy.lsp'],
     }
   }
 
-  // Try second candidate: puyapy-lsp --version
-  const secondCandidate = 'puyapy-lsp --version'
-  if (await testLspCandidate(secondCandidate)) {
+  const startWithPuyapyLsp = 'puyapy-lsp --version'
+  if (await tryToRunCommand(startWithPuyapyLsp)) {
     return {
       command: 'puyapy-lsp',
     }
@@ -75,7 +73,7 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
 
   const startServerCommand = await findStartServerCommand(pythonConfig)
   if (!startServerCommand) {
-    window.showErrorMessage('PuyaPy LSP is not installed or not available in the current environment.')
+    window.showErrorMessage('PuyaPy language server is not installed in the current environment.')
     return
   }
 
@@ -103,7 +101,7 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   }
 
   const client = new LanguageClient(
-    `pupapyLsp-${workspaceFolder.name}`,
+    `pupapy-${workspaceFolder.name}`,
     `PuyaPy Language Server - ${workspaceFolder.name}`,
     serverOptions,
     clientOptions

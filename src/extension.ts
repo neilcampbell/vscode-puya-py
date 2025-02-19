@@ -1,6 +1,6 @@
 import { workspace, ExtensionContext, window, TextDocument, Uri } from 'vscode'
 import { PythonExtension } from '@vscode/python-extension'
-import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './lsp-server'
+import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './language-server'
 
 async function onDocumentOpenedHandler(document: TextDocument) {
   if (document.languageId === 'python') {
@@ -21,6 +21,20 @@ async function onPythonEnvironmentChangedHandler(resource: Uri) {
 export async function activate(context: ExtensionContext) {
   const pythonApi = await PythonExtension.api()
 
+  // Handle already opened Python documents
+  if (window.activeTextEditor?.document.languageId === 'python') {
+    await onDocumentOpenedHandler(window.activeTextEditor.document)
+  }
+
+  // Setup handler for newly opened Python documents
+  context.subscriptions.push(
+    workspace.onDidOpenTextDocument(async (document: TextDocument) => {
+      if (document.languageId === 'python') {
+        await onDocumentOpenedHandler(document)
+      }
+    })
+  )
+
   // Handle interpreter changes
   context.subscriptions.push(
     pythonApi.environments.onDidChangeActiveEnvironmentPath(async (e) => {
@@ -30,20 +44,6 @@ export async function activate(context: ExtensionContext) {
       }
     })
   )
-
-  // Handle already opened Python documents
-  if (window.activeTextEditor?.document.languageId === 'python') {
-    await onDocumentOpenedHandler(window.activeTextEditor.document)
-  }
-
-  // Setup handler for newly opened Python documents
-  const disposable = workspace.onDidOpenTextDocument(async (document: TextDocument) => {
-    if (document.languageId === 'python') {
-      await onDocumentOpenedHandler(document)
-    }
-  })
-
-  context.subscriptions.push(disposable)
 
   // Handle workspace folder removal
   context.subscriptions.push(
