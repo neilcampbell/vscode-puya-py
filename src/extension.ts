@@ -32,35 +32,51 @@ async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig | unde
   }
 }
 
-async function ensurePuyapyIsInstalled(config: PythonConfig): Promise<boolean> {
-  if (!config.pythonPath || !config.envPath) {
-    return false
-  }
+type ServerCommand = {
+  command: string
+  args?: string[]
+}
 
-  const checkModuleCmd = `"${config.pythonPath}" -c "import puyapy"`
+async function testLspCandidate(command: string, options?: { env?: NodeJS.ProcessEnv }): Promise<boolean> {
   try {
     await new Promise<void>((resolve, reject) => {
-      exec(
-        checkModuleCmd,
-        {
-          env: {
-            VIRTUAL_ENV: config.envPath,
-          },
-        },
-        (error: Error | null) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve()
-          }
+      exec(command, { env: options?.env }, (error: Error | null) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
         }
-      )
+      })
     })
     return true
   } catch {
-    window.showErrorMessage('PuyaPy is not installed in the current environment.')
     return false
   }
+}
+
+async function findStartServerCommand(config: PythonConfig): Promise<ServerCommand | undefined> {
+  if (!config.pythonPath || !config.envPath) {
+    return undefined
+  }
+
+  // Try first candidate: python -m puyapy.lsp --version
+  const firstCandidate = `"${config.pythonPath}" -m puyapy.lsp --version`
+  if (await testLspCandidate(firstCandidate, { env: { VIRTUAL_ENV: config.envPath } })) {
+    return {
+      command: config.pythonPath,
+      args: ['-m', 'puyapy.lsp'],
+    }
+  }
+
+  // Try second candidate: puyapy-lsp --version
+  const secondCandidate = 'puyapy-lsp --version'
+  if (await testLspCandidate(secondCandidate)) {
+    return {
+      command: 'puyapy-lsp',
+    }
+  }
+
+  return undefined
 }
 
 async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
@@ -81,19 +97,20 @@ async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   const pythonConfig = await getPythonEnvironment(workspaceFolder?.uri)
 
   if (!pythonConfig || !pythonConfig.envPath || !pythonConfig.pythonPath) {
-    // TODO: handle global env
     return
   }
 
-  if (!(await ensurePuyapyIsInstalled(pythonConfig))) {
+  const startServerCommand = await findStartServerCommand(pythonConfig)
+  if (!startServerCommand) {
+    window.showErrorMessage('PuyaPy LSP is not installed or not available in the current environment.')
     return
   }
 
   // TODO: handle setting from settings.json
 
   const serverOptions: ServerOptions = {
-    command: pythonConfig.pythonPath,
-    args: ['-m', 'puyapy.lsp'],
+    command: startServerCommand.command,
+    args: startServerCommand.args,
     transport: TransportKind.stdio,
     options: {
       env: {
