@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
-import { workspace, ExtensionContext, window, TextDocument, Uri } from 'vscode'
+import { workspace, ExtensionContext, window, TextDocument, Uri, WorkspaceFolder } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import { PythonExtension } from '@vscode/python-extension'
 
@@ -11,6 +11,7 @@ import { PythonExtension } from '@vscode/python-extension'
 const clients: Map<string, LanguageClient> = new Map()
 
 type PythonConfig = {
+  id: string
   /*
    * Path to the Python environment, undefined if global
    */
@@ -28,23 +29,33 @@ export async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig
     return undefined
   }
   return {
+    id: environment.id,
     envPath: environment.environment?.folderUri.fsPath,
     pythonPath: environment.executable.uri?.fsPath,
   }
 }
 
-async function startLanguageServer(document: TextDocument) {
-  const workspaceFolder = workspace.getWorkspaceFolder(document.uri)
-  if (!workspaceFolder) return
+async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
+  const client = clients.get(workspaceFolder.name)
+  if (client) {
+    // Stop the existing client
+    await client.stop()
+    clients.delete(workspaceFolder.name)
 
+    await startLanguageServer(workspaceFolder)
+  }
+}
+
+async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   // Check if client already exists for this workspace folder
   if (clients.has(workspaceFolder.name)) {
     return
   }
 
-  const pythonConfig = await getPythonEnvironment(workspaceFolder.uri)
+  const pythonConfig = await getPythonEnvironment(workspaceFolder?.uri)
+
   if (!pythonConfig || !pythonConfig.envPath || !pythonConfig.pythonPath) {
-    // TODO: handle env
+    // TODO: handle global env
     return
   }
   // TODO: handle setting from settings.json
@@ -90,16 +101,45 @@ async function startLanguageServer(document: TextDocument) {
   await client.start()
 }
 
+async function onDocumentOpenedHandler(document: TextDocument) {
+  if (document.languageId === 'python') {
+    const folder = workspace.getWorkspaceFolder(document.uri)
+    if (folder) {
+      await startLanguageServer(folder)
+    }
+  }
+}
+
+async function onPythonEnvironmentChangedHandler(resource: Uri) {
+  const folder = workspace.getWorkspaceFolder(resource)
+  if (folder) {
+    await restartLanguageServer(folder)
+  }
+}
+
 export async function activate(context: ExtensionContext) {
+  // Setup Python extension API
+  const pythonApi = await PythonExtension.api()
+
+  // Handle interpreter changes
+  context.subscriptions.push(
+    pythonApi.environments.onDidChangeActiveEnvironmentPath(async (e) => {
+      if (e.resource) {
+        // TODO: what happen if the resource is undefined?
+        await onPythonEnvironmentChangedHandler(e.resource.uri)
+      }
+    })
+  )
+
   // Handle already opened Python documents first
   if (window.activeTextEditor?.document.languageId === 'python') {
-    await startLanguageServer(window.activeTextEditor.document)
+    await onDocumentOpenedHandler(window.activeTextEditor.document)
   }
 
   // Setup handler for newly opened Python documents
   const disposable = workspace.onDidOpenTextDocument(async (document: TextDocument) => {
     if (document.languageId === 'python') {
-      await startLanguageServer(document)
+      await onDocumentOpenedHandler(document)
     }
   })
 
