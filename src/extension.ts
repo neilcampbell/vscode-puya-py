@@ -19,14 +19,16 @@ type PythonConfig = {
 
 async function getPythonEnvironment(resource?: Uri): Promise<PythonConfig | undefined> {
   const api = await PythonExtension.api()
-  const environment = await api?.environments.resolveEnvironment(api?.environments.getActiveEnvironmentPath(resource))
-  if (!environment) {
+  const resolvedEnvironment = await api?.environments.resolveEnvironment(api?.environments.getActiveEnvironmentPath(resource))
+  if (!resolvedEnvironment) {
     return undefined
   }
+
   return {
-    id: environment.id,
-    envPath: environment.environment?.folderUri.fsPath,
-    pythonPath: environment.executable.uri?.fsPath,
+    id: resolvedEnvironment.id,
+    // We don't use resolvedEnvironment.environment.folderUri.fsPath here because it won't be set for global env
+    envPath: resolvedEnvironment.executable.sysPrefix,
+    pythonPath: resolvedEnvironment.executable.uri?.fsPath,
   }
 }
 
@@ -66,9 +68,9 @@ async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
   if (client) {
     await client.stop()
     clients.delete(workspaceFolder.name)
-
-    await startLanguageServer(workspaceFolder)
   }
+
+  await startLanguageServer(workspaceFolder)
 }
 
 async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
