@@ -13,10 +13,17 @@ runs:
       with:
         node-version: 20.x
 
+    # run npm ci preventing script access to npm auth token
     - name: Install dependencies
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: npm install
+      run: npm ci --ignore-scripts
+
+    - run: npm run audit
+      shell: bash
+
+    - run: npm run lint
+      shell: bash
 
     - name: Run tests (Linux)
       shell: bash

@@ -8,6 +8,9 @@
     "type": "git",
     "url": "https://github.com/PatrickDinh/vscode-puya-py"
   },
+  "scripts": {
+    "audit": "better-npm-audit audit -l moderate"
+  },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",

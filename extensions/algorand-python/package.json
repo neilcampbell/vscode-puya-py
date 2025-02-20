@@ -40,11 +40,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build-dev": "npm run build:clean && npm run build:check-types && node esbuild.js",
-    "build-prod": "npm-run-all build:* && node esbuild.js --production",
-    "build:clean": "rimraf dist",
-    "build:check-types": "tsc --noEmit",
-    "build:lint": "npm run lint",
+    "build-dev": "rimraf dist && npm run check-types && node esbuild.js",
+    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.js --production",
     "package": "npm run build-prod && vsce package",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",

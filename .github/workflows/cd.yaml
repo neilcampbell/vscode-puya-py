@@ -13,9 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      # run npm ci preventing script access to npm auth token
+      - run: npm ci --ignore-scripts
         shell: bash
-        run: npm install
+
+      - run: npm run audit
 
       - name: Build and Test
         uses: ./.github/actions/build-and-test
