@@ -15,7 +15,6 @@ jobs:
 
       # run npm ci preventing script access to npm auth token
       - run: npm ci --ignore-scripts
-        shell: bash
 
       - run: npm run audit
 
