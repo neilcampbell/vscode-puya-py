@@ -7,6 +7,7 @@ export default tseslint.config(
   tseslint.configs.recommended,
   {
     files: ['**/*.{js,ts}'],
+    ignores: ['dist/**', 'out/**', 'esbuild.js', '.vscode-test/**'],
     languageOptions: {
       parser: tseslint.parser,
       ecmaVersion: 2020,

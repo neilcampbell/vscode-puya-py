@@ -12,7 +12,10 @@
       },
       "problemMatcher": "$esbuild-watch",
       "isBackground": false,
-      "label": "npm: build-dev"
+      "label": "algorand-python: build-dev",
+      "options": {
+        "cwd": "${workspaceRoot}/extensions/algorand-python"
+      }
     },
     {
       "type": "npm",
@@ -23,7 +26,10 @@
       },
       "problemMatcher": "$esbuild-watch",
       "isBackground": false,
-      "label": "npm: pretest"
+      "label": "algorand-python: pretest",
+      "options": {
+        "cwd": "${workspaceRoot}/extensions/algorand-python"
+      }
     }
   ]
 }

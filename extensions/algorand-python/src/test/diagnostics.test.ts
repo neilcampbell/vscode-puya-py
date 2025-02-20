@@ -2,7 +2,8 @@ import * as vscode from 'vscode'
 import * as assert from 'assert'
 import { getDocUri, activate, doc } from './helper'
 
-suite('Diagnostics', () => {
+// Skip until we integrate with pupapy
+suite.skip('Diagnostics', () => {
   const docUri = getDocUri('diagnostics.py')
 
   test('Should get diagnostics', async () => {

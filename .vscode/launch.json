@@ -6,27 +6,27 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Extension",
+      "name": "Debug Algorand Python",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-      "outFiles": ["${workspaceRoot}/dist/extension.js"],
+      "args": ["--extensionDevelopmentPath=${workspaceRoot}/extensions/algorand-python"],
+      "outFiles": ["${workspaceRoot}/extensions/algorand-python/dist/extension.js"],
       "autoAttachChildProcesses": true,
-      "preLaunchTask": "npm: build-dev"
+      "preLaunchTask": "algorand-python: build-dev"
     },
     {
-      "name": "Debug Test",
+      "name": "Debug Algorand Python Tests",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/out/src/test/index",
+        "--extensionDevelopmentPath=${workspaceRoot}/extensions/algorand-python",
+        "--extensionTestsPath=${workspaceRoot}/extensions/algorand-python/out/test/index",
         "${workspaceRoot}/testFixture"
       ],
-      "outFiles": ["${workspaceRoot}/out/src/test/**/*.js"],
-      "preLaunchTask": "npm: pretest"
+      "outFiles": ["${workspaceRoot}/extensions/algorand-python/out/test/**/*.js"],
+      "preLaunchTask": "algorand-python: pretest"
     }
   ]
 }

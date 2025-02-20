@@ -4,79 +4,15 @@
   "publisher": "pat-dev",
   "description": "",
   "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.97.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/PatrickDinh/vscode-puya-py"
   },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onLanguage:python"
-  ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "PuyaPy configuration",
-      "properties": {
-        "puyapy.languageServerPath": {
-          "scope": "machine-overridable",
-          "type": "string",
-          "description": "Path to the PuyaPy language server"
-        }
-      }
-    },
-    "commands": [
-      {
-        "command": "puyapy.restartLanguageServer",
-        "title": "Restart Language Server",
-        "category": "PuyaPy"
-      }
-    ]
-  },
-  "scripts": {
-    "check-types": "tsc --noEmit",
-    "build-dev": "npm run build:clean && npm run build:check-types && node esbuild.js",
-    "build-prod": "npm-run-all build:* && node esbuild.js --production",
-    "build:clean": "rimraf dist",
-    "build:check-types": "tsc --noEmit",
-    "build:lint": "npm run lint",
-    "package": "npm run build-prod && vsce package",
-    "lint": "eslint src",
-    "lint:fix": "npm run lint -- --fix",
-    "pretest": "npm-run-all pretest:*",
-    "pretest:build-extension": "npm run build-dev",
-    "pretest:build-tests": "tsc -p . --outDir out",
-    "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/src/test/runTest\"",
-    "audit": "better-npm-audit audit -l moderate",
-    "pre-commit": "npm-run-all check-types lint:fix audit test"
-  },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.97.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
-    "@vscode/test-electron": "^2.4.1",
-    "better-npm-audit": "^3.11.0",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.24.2",
     "eslint": "^9.19.0",
-    "eslint-config-prettier": "^10.0.1",
-    "glob": "^11.0.1",
-    "mocha": "^11.1.0",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0"
-  },
-  "dependencies": {
-    "@vscode/python-extension": "^1.0.5",
-    "vscode-languageclient": "^9.0.1"
+    "eslint-config-prettier": "^10.0.1"
   }
 }
