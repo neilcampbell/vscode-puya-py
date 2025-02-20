@@ -7,7 +7,6 @@ inputs:
     default: '.'
 runs:
   using: 'composite'
-  working-directory: ${{ inputs.working-directory }}
   shell: bash
   steps:
     - name: Install Node.js
@@ -17,18 +16,24 @@ runs:
 
     # run npm ci preventing script access to npm auth token
     - name: Install dependencies
+      working-directory: ${{ inputs.working-directory }}
       run: npm ci --ignore-scripts
 
     - run: pwd # Show current working directory
+      working-directory: ${{ inputs.working-directory }}
 
     - run: npm run audit
+      working-directory: ${{ inputs.working-directory }}
 
     - run: npm run lint
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Run tests (Linux)
+      working-directory: ${{ inputs.working-directory }}
       run: xvfb-run -a npm test
       if: runner.os == 'Linux'
 
     - name: Run tests (Non-Linux)
+      working-directory: ${{ inputs.working-directory }}
       run: npm test
       if: runner.os != 'Linux'
