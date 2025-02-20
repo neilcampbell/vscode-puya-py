@@ -1,8 +1,8 @@
 {
-  "name": "vscode-puya-py",
-  "displayName": "vscode-puya-py",
+  "name": "algorand-python",
+  "displayName": "Algorand Python",
   "publisher": "pat-dev",
-  "description": "",
+  "description": "Algorand Python Extension",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.95.0"
