@@ -5,7 +5,11 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.97.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PatrickDinh/vscode-puya-py"
   },
   "categories": [
     "Other"
@@ -41,7 +45,8 @@
     "build:clean": "rimraf dist",
     "build:check-types": "tsc --noEmit",
     "build:lint": "npm run lint",
-    "lint": "eslint .",
+    "package": "npm run build-prod && vsce package",
+    "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
     "pretest": "npm-run-all pretest:*",
     "pretest:build-extension": "npm run build-dev",
