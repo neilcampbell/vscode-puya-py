@@ -4,9 +4,10 @@ inputs:
   working-directory:
     description: 'The working directory to run commands in'
     required: true
-    default: '.'
+
 runs:
   using: 'composite'
+  working-directory: ${{ inputs.working-directory }}
   shell: bash
   steps:
     - name: Install Node.js
@@ -14,26 +15,20 @@ runs:
       with:
         node-version: 20.x
 
+    - run: echo ${{ inputs.working-directory }}
+
     # run npm ci preventing script access to npm auth token
     - name: Install dependencies
-      working-directory: ${{ inputs.working-directory }}
       run: npm ci --ignore-scripts
 
-    - run: pwd # Show current working directory
-      working-directory: ${{ inputs.working-directory }}
-
     - run: npm run audit
-      working-directory: ${{ inputs.working-directory }}
 
     - run: npm run lint
-      working-directory: ${{ inputs.working-directory }}
 
     - name: Run tests (Linux)
-      working-directory: ${{ inputs.working-directory }}
       run: xvfb-run -a npm test
       if: runner.os == 'Linux'
 
     - name: Run tests (Non-Linux)
-      working-directory: ${{ inputs.working-directory }}
       run: npm test
       if: runner.os != 'Linux'
