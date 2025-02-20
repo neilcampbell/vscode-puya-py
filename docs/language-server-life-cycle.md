@@ -70,6 +70,17 @@ On deactivation:
 - Stops all running language server instances
 - Clears the client tracking Map
 
+## Restarting the Language Server
+
+Users can manually restart the language server using the VS Code command palette:
+
+1. Open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P)
+2. Search for and select "PuyaPy: Restart Language Server"
+
+This will:
+
+- Restart the currently running language server instance associated with the active folder
+
 ## Notes
 
 - The extension maintains separate language server instances for each workspace folder
