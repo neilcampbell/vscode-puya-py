@@ -1,4 +1,4 @@
-import { workspace, ExtensionContext, window, TextDocument, Uri } from 'vscode'
+import { workspace, ExtensionContext, window, TextDocument, Uri, commands } from 'vscode'
 import { PythonExtension } from '@vscode/python-extension'
 import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './language-server'
 
@@ -20,8 +20,6 @@ async function onDocumentOpenedHandler(context: ExtensionContext, document: Text
   }
 }
 
-// TODO: command to restart language server for a specific workspace folder
-
 async function onPythonEnvironmentChangedHandler(resource: Uri) {
   const folder = workspace.getWorkspaceFolder(resource)
   if (folder) {
@@ -29,8 +27,28 @@ async function onPythonEnvironmentChangedHandler(resource: Uri) {
   }
 }
 
+async function restartLanguageServerCommand() {
+  const editor = window.activeTextEditor
+  if (!editor) {
+    window.showErrorMessage('No active editor found')
+    return
+  }
+
+  const folder = workspace.getWorkspaceFolder(editor.document.uri)
+  if (!folder) {
+    window.showErrorMessage('No workspace folder found for the current file')
+    return
+  }
+
+  await restartLanguageServer(folder)
+  window.showInformationMessage('PupaPy language server restarted successfully')
+}
+
 export async function activate(context: ExtensionContext) {
   const pythonApi = await PythonExtension.api()
+
+  // Register restart command
+  context.subscriptions.push(commands.registerCommand('puyapy.restartLanguageServer', restartLanguageServerCommand))
 
   // Handle already opened Python documents
   if (window.activeTextEditor?.document.languageId === 'python') {

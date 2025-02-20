@@ -25,7 +25,14 @@
           "description": "Path to the PuyaPy language server"
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "puyapy.restartLanguageServer",
+        "title": "Restart Language Server",
+        "category": "PuyaPy"
+      }
+    ]
   },
   "scripts": {
     "check-types": "tsc --noEmit",
