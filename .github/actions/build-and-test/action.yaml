@@ -15,17 +15,17 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: |
-        cd ${{ inputs.working-directory }}
-        npm install
-        cd client && npm install && cd ..
+      working-directory: ${{ inputs.working-directory }}
+      run: npm install
 
     - name: Run tests (Linux)
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: xvfb-run -a npm test
       if: runner.os == 'Linux'
 
     - name: Run tests (Non-Linux)
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: npm test
       if: runner.os != 'Linux'
