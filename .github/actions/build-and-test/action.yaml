@@ -7,6 +7,7 @@ inputs:
     default: '.'
 runs:
   using: 'composite'
+  working-directory: ${{ inputs.working-directory }}
   steps:
     - name: Install Node.js
       uses: actions/setup-node@v4
@@ -16,7 +17,6 @@ runs:
     # run npm ci preventing script access to npm auth token
     - name: Install dependencies
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
       run: npm ci --ignore-scripts
 
     - run: npm run audit
@@ -27,12 +27,10 @@ runs:
 
     - name: Run tests (Linux)
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
       run: xvfb-run -a npm test
       if: runner.os == 'Linux'
 
     - name: Run tests (Non-Linux)
       shell: bash
-      working-directory: ${{ inputs.working-directory }}
       run: npm test
       if: runner.os != 'Linux'
