@@ -13,17 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Build and Test
+        uses: ./.github/actions/build-and-test
         with:
-          node-version: 20.x
-
-      - run: |
-          npm install
-          cd client && npm install && cd ..
-
-      - run: xvfb-run -a npm test
-        if: runner.os == 'Linux'
-
-      - run: npm test
-        if: runner.os != 'Linux'
+          working-directory: 'extensions/algorand-python'
