@@ -1,7 +1,7 @@
 import { window, workspace, WorkspaceFolder } from 'vscode'
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import { exec } from 'child_process'
-import { PythonConfig, getPythonEnvironment } from './python-environment'
+import { PythonConfig, getPythonEnvironment } from './environment'
 
 const clients: Map<string, LanguageClient> = new Map()
 

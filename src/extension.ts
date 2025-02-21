@@ -1,6 +1,6 @@
 import { workspace, ExtensionContext, window, TextDocument, Uri, commands } from 'vscode'
 import { PythonExtension } from '@vscode/python-extension'
-import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './language-server'
+import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './features/python/language-server'
 
 async function onDocumentOpenedHandler(context: ExtensionContext, document: TextDocument) {
   if (document.languageId === 'python') {
