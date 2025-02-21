@@ -78,6 +78,7 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   // Doesn't seems to be a better way to handle this
   // https://github.com/microsoft/vscode/issues/46471
   // likely we will need to use this https://github.com/DominicVonk/vscode-variables
+  // TODO: handle all predefined variables
   if (languageServerPath && languageServerPath.includes('${workspaceFolder}')) {
     languageServerPath = languageServerPath.replace('${workspaceFolder}', workspaceFolder.uri.fsPath)
   }

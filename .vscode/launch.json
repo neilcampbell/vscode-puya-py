@@ -6,7 +6,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Algorand Python",
+      "name": "Debug",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
@@ -16,7 +16,7 @@
       "preLaunchTask": "npm: build-dev"
     },
     {
-      "name": "Debug Algorand Python Tests",
+      "name": "Debug Tests",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
