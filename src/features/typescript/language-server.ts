@@ -1,6 +1,12 @@
 import { window } from 'vscode'
 import { WorkspaceFolder } from 'vscode'
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
+import {
+  createClientSocketTransport,
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+  TransportKind,
+} from 'vscode-languageclient/node'
 
 const clients: Map<string, LanguageClient> = new Map()
 
@@ -9,15 +15,21 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     return
   }
 
-  const serverOptions: ServerOptions = {
-    command: 'npx',
-    args: ['run-language-server'],
-    transport: TransportKind.stdio,
-    options: {
-      cwd: workspaceFolder.uri.fsPath,
-      shell: true,
-    },
-  }
+  const serverOptions: ServerOptions = startedInDebugMode()
+    ? async () => {
+        const transport = await createClientSocketTransport(8888)
+        const protocol = await transport.onConnected()
+        return { reader: protocol[0], writer: protocol[1] }
+      }
+    : {
+        command: 'npx',
+        args: ['run-language-server'],
+        transport: TransportKind.stdio,
+        options: {
+          cwd: workspaceFolder.uri.fsPath,
+          shell: true,
+        },
+      }
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
@@ -45,8 +57,30 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
   }
 }
 
+export async function restartLanguageServer(workspaceFolder: WorkspaceFolder) {
+  const client = clients.get(workspaceFolder.name)
+  if (client) {
+    await client.stop()
+    clients.delete(workspaceFolder.name)
+  }
+
+  await startLanguageServer(workspaceFolder)
+}
+
 export async function stopAllLanguageServers(): Promise<void> {
   const promises = Array.from(clients.values()).map((client) => client.stop())
   await Promise.all(promises)
   clients.clear()
+}
+
+function startedInDebugMode(): boolean {
+  const debugStartWith: string[] = ['--debug=', '--debug-brk=', '--inspect=', '--inspect-brk=']
+  const debugEquals: string[] = ['--debug', '--debug-brk', '--inspect', '--inspect-brk']
+  const args: string[] = process.execArgv
+  if (args) {
+    return args.some((arg) => {
+      return debugStartWith.some((value) => arg.startsWith(value)) || debugEquals.some((value) => arg === value)
+    })
+  }
+  return false
 }
