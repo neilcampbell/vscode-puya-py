@@ -32,7 +32,9 @@ async function findStartServerCommand(config: PythonConfig): Promise<ServerComma
     return undefined
   }
 
-  const startWithPython = `"${config.pythonPath}" -m puyapy.lsp --version`
+  const startWithPuyapyLsp = 'puyapy.lsp --help' // TODO: Switch to --version when supported
+
+  const startWithPython = `"${config.pythonPath}" -m ${startWithPuyapyLsp}`
   if (await tryToRunCommand(startWithPython)) {
     return {
       command: config.pythonPath,
@@ -40,7 +42,6 @@ async function findStartServerCommand(config: PythonConfig): Promise<ServerComma
     }
   }
 
-  const startWithPuyapyLsp = 'puyapy-lsp --version'
   if (await tryToRunCommand(startWithPuyapyLsp)) {
     return {
       command: 'puyapy-lsp',
