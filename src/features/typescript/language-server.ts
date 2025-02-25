@@ -7,6 +7,7 @@ import {
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node'
+import { startedInDebugMode } from '../../utils/started-in-debug-mode'
 
 const clients: Map<string, LanguageClient> = new Map()
 
@@ -71,16 +72,4 @@ export async function stopAllLanguageServers(): Promise<void> {
   const promises = Array.from(clients.values()).map((client) => client.stop())
   await Promise.all(promises)
   clients.clear()
-}
-
-function startedInDebugMode(): boolean {
-  const debugStartWith: string[] = ['--debug=', '--debug-brk=', '--inspect=', '--inspect-brk=']
-  const debugEquals: string[] = ['--debug', '--debug-brk', '--inspect', '--inspect-brk']
-  const args: string[] = process.execArgv
-  if (args) {
-    return args.some((arg) => {
-      return debugStartWith.some((value) => arg.startsWith(value)) || debugEquals.some((value) => arg === value)
-    })
-  }
-  return false
 }

@@ -1,7 +1,14 @@
 import { window, workspace, WorkspaceFolder } from 'vscode'
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node'
+import {
+  createServerSocketTransport,
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+  TransportKind,
+} from 'vscode-languageclient/node'
 import { exec } from 'child_process'
 import { PythonConfig, getPythonEnvironment } from './environment'
+import { startedInDebugMode } from '../../utils/started-in-debug-mode'
 
 const clients: Map<string, LanguageClient> = new Map()
 
@@ -98,17 +105,22 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     return
   }
 
-  const serverOptions: ServerOptions = {
-    command: startServerCommand.command,
-    args: startServerCommand.args,
-    transport: TransportKind.stdio,
-    options: {
-      env: {
-        VIRTUAL_ENV: `${pythonConfig.envPath}`,
-      },
-      ...(languageServerPath && { cwd: languageServerPath }),
-    },
-  }
+  const serverOptions: ServerOptions = startedInDebugMode()
+    ? async () => {
+        const transport = createServerSocketTransport(8888)
+        return { reader: transport[0], writer: transport[1] }
+      }
+    : {
+        command: startServerCommand.command,
+        args: startServerCommand.args,
+        transport: TransportKind.stdio,
+        options: {
+          env: {
+            VIRTUAL_ENV: `${pythonConfig.envPath}`,
+          },
+          ...(languageServerPath && { cwd: languageServerPath }),
+        },
+      }
 
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
