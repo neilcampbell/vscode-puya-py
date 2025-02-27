@@ -16,11 +16,21 @@
       "preLaunchTask": "npm: build-dev"
     },
     {
-      "name": "Debug Simple Python",
+      "name": "Debug Algorand Python",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/examples/simple-python"],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/examples/algorand-python"],
+      "outFiles": ["${workspaceRoot}/dist/extension.js"],
+      "autoAttachChildProcesses": true,
+      "preLaunchTask": "npm: build-dev"
+    },
+    {
+      "name": "Debug Python",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/examples/python"],
       "outFiles": ["${workspaceRoot}/dist/extension.js"],
       "autoAttachChildProcesses": true,
       "preLaunchTask": "npm: build-dev"

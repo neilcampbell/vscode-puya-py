@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "python-workspace"
+version = "0.1.0"
+description = "Non Algorand Python Workspace"
+authors = ["Neil Campbell <neil.campbell@makerx.com.au>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+algokit-utils = "^3.0.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+algokit-client-generator = "^2.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -10,6 +10,8 @@ import { exec } from 'child_process'
 import { PythonConfig, getPythonEnvironment } from './environment'
 import { startedInDebugMode } from '../../utils/started-in-debug-mode'
 
+const languageServerName = 'Algorand Python Language Server'
+
 const clients: Map<string, LanguageClient> = new Map()
 
 type ServerCommand = {
@@ -100,8 +102,10 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     startServerCommand = await findStartServerCommand(pythonConfig)
   }
 
+  const outputChannel = window.createOutputChannel(languageServerName)
+
   if (!startServerCommand) {
-    window.showErrorMessage('PuyaPy language server is not installed in the current environment.')
+    outputChannel.appendLine(`The Algorand Python language server was not found in the current environment.`)
     return
   }
 
@@ -117,6 +121,8 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
         options: {
           env: {
             VIRTUAL_ENV: `${pythonConfig.envPath}`,
+            NO_COLOR: '1',
+            PYTHONUTF8: '1',
           },
           ...(languageServerPath && { cwd: languageServerPath }),
         },
@@ -130,11 +136,15 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
       },
     ],
     workspaceFolder: workspaceFolder,
+    initializationOptions: {
+      analysisPrefix: pythonConfig.envPath,
+    },
+    outputChannel,
   }
 
   const client = new LanguageClient(
     `pupapy-${workspaceFolder.name}`,
-    `PuyaPy Language Server - ${workspaceFolder.name}`,
+    `${languageServerName} - ${workspaceFolder.name}`,
     serverOptions,
     clientOptions
   )
@@ -144,7 +154,7 @@ export async function startLanguageServer(workspaceFolder: WorkspaceFolder) {
     await client.start()
     clients.set(workspaceFolder.name, client)
   } catch {
-    window.showErrorMessage('Failed to start PuyaPy language server.')
+    window.showErrorMessage('Failed to start the Algorand Python language server.')
   }
 }
 

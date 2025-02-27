@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "simple-python"
+name = "algorand-python-workspace"
 version = "0.1.0"
-description = "Algorand smart contracts"
+description = "Algorand Python Workspace"
 authors = ["Neil Campbell <neil.campbell@makerx.com.au>"]
 readme = "README.md"
 
