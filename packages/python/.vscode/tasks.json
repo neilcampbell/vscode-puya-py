@@ -4,17 +4,18 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "pretest",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build-dev"],
       "group": {
         "kind": "build",
         "isDefault": true
       },
       "problemMatcher": "$esbuild-watch",
       "isBackground": false,
-      "label": "npm: pretest",
+      "label": "npm: build-dev",
       "options": {
-        "cwd": "${workspaceRoot}"
+        "cwd": "${workspaceFolder}"
       }
     }
   ]

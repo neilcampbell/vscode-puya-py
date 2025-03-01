@@ -1,0 +1,48 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - enhancements
+  schedule:
+    - cron: '0 8 * * 1' # Each monday 8 AM UTC
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        # os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      # run npm ci preventing script access to npm auth token
+      - run: npm ci --ignore-scripts
+
+      # - run: npm run audit
+
+      - name: Get next version (dry run)
+        id: get-next-version
+        run: npm run semantic-test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+
+      # - name: Build and Test (Algorand Python)
+      #   uses: ./.github/actions/build-and-test
+      #   with:
+      #     working-directory: './packages/python'
