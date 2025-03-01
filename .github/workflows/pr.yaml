@@ -35,6 +35,9 @@ jobs:
 
       # - run: npm run audit
 
+      - run: npm run build
+        shell: bash
+
       - name: Get next version (dry run)
         id: get-next-version
         run: npm run semantic-test

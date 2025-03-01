@@ -12,6 +12,8 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm run build:python",
+    "build:python": "cd packages/python && npm run build-prod",
     "semantic-test": "npm run semantic-test:python",
     "semantic-test:python": "cd packages/python && npm run semantic-test"
   },
