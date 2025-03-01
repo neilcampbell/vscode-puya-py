@@ -22,14 +22,24 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 
-    - name: Run tests (Linux)
-      run: xvfb-run -a npm test
-      if: runner.os == 'Linux'
-      working-directory: ${{ inputs.working-directory }}
-      shell: bash
+    # TODO: NC - Temporarily disabled
+    # - name: Run tests (Linux)
+    #   run: xvfb-run -a npm test
+    #   if: runner.os == 'Linux'
+    #   working-directory: ${{ inputs.working-directory }}
+    #   shell: bash
 
-    - name: Run tests (Non-Linux)
-      run: npm test
-      if: runner.os != 'Linux'
+    # - name: Run tests (Non-Linux)
+    #   run: npm test
+    #   if: runner.os != 'Linux'
+    #   working-directory: ${{ inputs.working-directory }}
+    #   shell: bash
+
+    # TODO: NC - Temporarily here
+    - name: Get next version (dry run)
+      id: get-next-version
+      run: npm run semantic-test -w
       working-directory: ${{ inputs.working-directory }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       shell: bash

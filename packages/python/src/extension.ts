@@ -4,11 +4,7 @@ import {
   startLanguageServer as startPythonLanguageServer,
   restartLanguageServer as restartPythonLanguageServer,
   stopAllLanguageServers as stopPythonLanguageServers,
-} from '../packages/python/src/language-server'
-import {
-  startLanguageServer as startTypeScriptLanguageServer,
-  restartLanguageServer as restartTypeScriptLanguageServer,
-} from './features/typescript/language-server'
+} from './language-server'
 
 async function onDocumentOpenedHandler(context: ExtensionContext, document: TextDocument) {
   if (document.languageId === 'python') {
@@ -26,12 +22,13 @@ async function onDocumentOpenedHandler(context: ExtensionContext, document: Text
       )
     }
   }
-  if (document.languageId === 'typescript' && document.uri.fsPath.endsWith('algo.ts')) {
-    const folder = workspace.getWorkspaceFolder(document.uri)
-    if (folder) {
-      await startTypeScriptLanguageServer(folder)
-    }
-  }
+  // TODO: NC - Remove this once we move this code
+  // if (document.languageId === 'typescript' && document.uri.fsPath.endsWith('algo.ts')) {
+  //   const folder = workspace.getWorkspaceFolder(document.uri)
+  //   if (folder) {
+  //     await startTypeScriptLanguageServer(folder)
+  //   }
+  // }
 }
 
 async function onPythonEnvironmentChangedHandler(resource: Uri) {
@@ -55,7 +52,9 @@ async function restartLanguageServerCommand() {
   }
 
   await restartPythonLanguageServer(folder)
-  await restartTypeScriptLanguageServer(folder)
+
+  // TODO: NC - Move this for TypeScript
+  // await restartTypeScriptLanguageServer(folder)
   window.showInformationMessage('PupaPy language server restarted successfully')
 }
 
