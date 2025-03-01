@@ -41,7 +41,7 @@ async function findStartServerCommand(config: PythonConfig): Promise<ServerComma
     return undefined
   }
 
-  const startWithPuyapyLsp = 'puyapy.lsp --help' // TODO: Switch to --version when supported
+  const startWithPuyapyLsp = 'puyapy.lsp --help' // TODO: Switch to --version if/when supported
 
   const startWithPython = `"${config.pythonPath}" -m ${startWithPuyapyLsp}`
   if (await tryToRunCommand(startWithPython)) {
