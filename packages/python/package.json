@@ -1,7 +1,7 @@
 {
   "name": "algorand-python-vscode",
   "displayName": "Algorand Python",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Tooling to support building with Algorand Python",
   "author": "Algorand Foundation",
