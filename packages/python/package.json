@@ -35,8 +35,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build-dev": "rimraf dist && npm run check-types && node esbuild.js",
-    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.js --production",
+    "build-dev": "rimraf dist && npm run check-types && node esbuild.mjs",
+    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.mjs --production",
     "package": "npm run build-prod && vsce package",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
@@ -46,7 +46,8 @@
     "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/test/runTest\"",
     "audit": "better-npm-audit audit -l moderate",
     "pre-commit": "npm-run-all check-types lint:fix audit test",
-    "semantic-test": "semantic-release-monorepo --branches enhancements"
+    "semantic-test": "semantic-release-monorepo --branches enhancements",
+    "build": "npm run build-prod"
   },
   "dependencies": {
     "@vscode/python-extension": "^1.0.5",

@@ -1,40 +1,29 @@
 import { workspace, ExtensionContext, window, TextDocument, Uri, commands } from 'vscode'
 import { PythonExtension } from '@vscode/python-extension'
-import {
-  startLanguageServer as startPythonLanguageServer,
-  restartLanguageServer as restartPythonLanguageServer,
-  stopAllLanguageServers as stopPythonLanguageServers,
-} from './language-server'
+import { startLanguageServer, restartLanguageServer, stopAllLanguageServers } from './language-server'
 
 async function onDocumentOpenedHandler(context: ExtensionContext, document: TextDocument) {
   if (document.languageId === 'python') {
     const folder = workspace.getWorkspaceFolder(document.uri)
     if (folder) {
-      await startPythonLanguageServer(folder)
+      await startLanguageServer(folder)
 
       // Handle language server path configuration changes
       context.subscriptions.push(
         workspace.onDidChangeConfiguration(async (event) => {
-          if (event.affectsConfiguration('puyapy.languageServerPath', folder)) {
-            await restartPythonLanguageServer(folder)
+          if (event.affectsConfiguration('algorandPython.languageServerPath', folder)) {
+            await restartLanguageServer(folder)
           }
         })
       )
     }
   }
-  // TODO: NC - Remove this once we move this code
-  // if (document.languageId === 'typescript' && document.uri.fsPath.endsWith('algo.ts')) {
-  //   const folder = workspace.getWorkspaceFolder(document.uri)
-  //   if (folder) {
-  //     await startTypeScriptLanguageServer(folder)
-  //   }
-  // }
 }
 
 async function onPythonEnvironmentChangedHandler(resource: Uri) {
   const folder = workspace.getWorkspaceFolder(resource)
   if (folder) {
-    await restartPythonLanguageServer(folder)
+    await restartLanguageServer(folder)
   }
 }
 
@@ -51,11 +40,8 @@ async function restartLanguageServerCommand() {
     return
   }
 
-  await restartPythonLanguageServer(folder)
-
-  // TODO: NC - Move this for TypeScript
-  // await restartTypeScriptLanguageServer(folder)
-  window.showInformationMessage('PupaPy language server restarted successfully')
+  await restartLanguageServer(folder)
+  window.showInformationMessage('Algorand Python language server restarted successfully')
 }
 
 export async function activate(context: ExtensionContext) {
@@ -63,7 +49,7 @@ export async function activate(context: ExtensionContext) {
   const pythonApi = await PythonExtension.api()
 
   // Register restart command
-  context.subscriptions.push(commands.registerCommand('puyapy.restartLanguageServer', restartLanguageServerCommand))
+  context.subscriptions.push(commands.registerCommand('algorandPython.restartLanguageServer', restartLanguageServerCommand))
 
   // Handle already opened documents
   if (window.activeTextEditor?.document) {
@@ -91,12 +77,12 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(
     workspace.onDidChangeWorkspaceFolders(async (event) => {
       for (const folder of event.removed) {
-        await restartPythonLanguageServer(folder)
+        await restartLanguageServer(folder)
       }
     })
   )
 }
 
 export async function deactivate(): Promise<void> {
-  await stopPythonLanguageServers()
+  await stopAllLanguageServers()
 }

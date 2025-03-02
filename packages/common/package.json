@@ -1,0 +1,14 @@
+{
+  "name": "common-vscode",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Algorand Foundation",
+  "publisher": "AlgorandFoundation",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo 'no op'",
+    "sematic-test": "echo 'no op'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

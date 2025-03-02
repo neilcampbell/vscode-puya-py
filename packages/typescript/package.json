@@ -35,8 +35,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build-dev": "rimraf dist && npm run check-types && node esbuild.js",
-    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.js --production",
+    "build-dev": "rimraf dist && npm run check-types && node esbuild.mjs",
+    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.mjs --production",
     "package": "npm run build-prod && vsce package",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
@@ -45,7 +45,9 @@
     "pretest:build-tests": "tsc -p . --outDir out",
     "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/test/runTest\"",
     "audit": "better-npm-audit audit -l moderate",
-    "pre-commit": "npm-run-all check-types lint:fix audit test"
+    "pre-commit": "npm-run-all check-types lint:fix audit test",
+    "build": "echo 'no op'",
+    "sematic-test": "echo 'no op'"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
@@ -104,65 +106,5 @@
         }
       }
     }
-  },
-  "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": "beta"
-      },
-      {
-        "name": "do-not-delete"
-      }
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "build",
-              "release": "patch"
-            },
-            {
-              "type": "chore",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "build",
-                "section": "Dependencies and Other Build Updates",
-                "hidden": false
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false,
-          "failTitle": false
-        }
-      ],
-      "semantic-release-export-data"
-    ]
   }
 }
