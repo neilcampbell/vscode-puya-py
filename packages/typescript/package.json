@@ -35,8 +35,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "build-dev": "rimraf dist && npm run check-types && node esbuild.js",
-    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.js --production",
+    "build-dev": "rimraf dist && npm run check-types && node esbuild.mjs",
+    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.mjs --production",
     "package": "npm run build-prod && vsce package",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
@@ -45,35 +45,12 @@
     "pretest:build-tests": "tsc -p . --outDir out",
     "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/test/runTest\"",
     "audit": "better-npm-audit audit -l moderate",
-    "pre-commit": "npm-run-all check-types lint:fix audit test"
+    "pre-commit": "npm-run-all check-types lint:fix audit test",
+    "build": "echo 'no op'",
+    "semantic-test": "echo 'no op'"
   },
-  "dependencies": {
-    "vscode-languageclient": "^9.0.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^8.22.0",
-    "@typescript-eslint/parser": "^8.22.0",
-    "@vscode/test-electron": "^2.4.1",
-    "better-npm-audit": "^3.11.0",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.19.0",
-    "eslint-config-prettier": "^10.0.1",
-    "glob": "^11.0.1",
-    "mocha": "^11.1.0",
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^6.0.1",
-    "semantic-release": "^24.2.3",
-    "semantic-release-export-data": "^1.0.1",
-    "semantic-release-monorepo": "^8.0.2",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "main": "./dist/extension.js",
   "activationEvents": [
     "onLanguage:python",
@@ -104,65 +81,5 @@
         }
       }
     }
-  },
-  "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": "beta"
-      },
-      {
-        "name": "do-not-delete"
-      }
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "build",
-              "release": "patch"
-            },
-            {
-              "type": "chore",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "build",
-                "section": "Dependencies and Other Build Updates",
-                "hidden": false
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false,
-          "failTitle": false
-        }
-      ],
-      "semantic-release-export-data"
-    ]
   }
 }

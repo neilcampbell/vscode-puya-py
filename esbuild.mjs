@@ -1,4 +1,4 @@
-const esbuild = require('esbuild')
+import esbuild from 'esbuild'
 
 const production = process.argv.includes('--production')
 
@@ -22,7 +22,7 @@ const esbuildProblemMatcherPlugin = {
   },
 }
 
-async function main() {
+export async function main() {
   const ctx = await esbuild.context({
     entryPoints: ['src/extension.ts'],
     bundle: true,
@@ -42,8 +42,3 @@ async function main() {
   await ctx.rebuild()
   await ctx.dispose()
 }
-
-main().catch((e) => {
-  console.error(e)
-  process.exit(1)
-})
