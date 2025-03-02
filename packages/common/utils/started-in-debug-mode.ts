@@ -10,7 +10,7 @@
 //   return false
 // }
 
-// TODO: NC - Fix this
+// TODO: NC - Fix this to maybe use a setting?
 export function startedInDebugMode() {
   return false
 }
