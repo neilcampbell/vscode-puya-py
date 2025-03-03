@@ -11,6 +11,9 @@ inputs:
     description: 'The Node version'
     required: true
     default: '20'
+  vsce-pat:
+    description: 'The Visual Studio Code Marketplace token'
+    required: true
 
 runs:
   using: 'composite'
@@ -30,5 +33,5 @@ runs:
       if: ${{ inputs.production_release == 'true' }}
       run: npx vsce publish --packagePath $(find . -iname '*.vsix')
       env:
-        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        VSCE_PAT: ${{ inputs.vsce-pat }}
       shell: bash
