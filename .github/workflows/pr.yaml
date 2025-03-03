@@ -30,3 +30,21 @@ jobs:
 
       - name: Build and Test
         uses: ./.github/actions/build-and-test
+
+      - run: ls -la
+      - run: ls ./packages/python/dist
+      - run: ls ./packages/typescript/dist
+
+      - name: Upload python build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: 'packages/python/dist'
+          if-no-files-found: error
+
+      - name: Upload typescript build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: typescript-dist
+          path: 'packages/typescript/dist'
+          if-no-files-found: error
