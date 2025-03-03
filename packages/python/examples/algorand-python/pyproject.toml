@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "algorand-python-workspace"
+version = "0.1.0"
+description = "Algorand Python Workspace"
+authors = ["Neil Campbell <neil.campbell@makerx.com.au>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+algokit-utils = "^3.0.0"
+python-dotenv = "^1.0.0"
+algorand-python = "^2.0.0"
+algorand-python-testing = "^0.4.0"
+
+[tool.poetry.group.dev.dependencies]
+algokit-client-generator = "^2.0.0"
+puyapy = { git = "https://github.com/algorandfoundation/puya.git", branch = "lsp-poc" }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

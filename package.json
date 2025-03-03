@@ -1,63 +1,32 @@
 {
-  "name": "algorand-python",
-  "displayName": "Algorand Python",
-  "publisher": "pat-dev",
-  "description": "Algorand Python Extension",
+  "name": "languages-vscode",
+  "private": true,
+  "author": "Algorand Foundation",
+  "publisher": "AlgorandFoundation",
   "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.95.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/PatrickDinh/vscode-puya-py"
   },
-  "categories": [
-    "Other"
+  "workspaces": [
+    "packages/*"
   ],
-  "activationEvents": [
-    "onLanguage:python",
-    "onLanguage:typescript"
-  ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "PuyaPy configuration",
-      "properties": {
-        "puyapy.languageServerPath": {
-          "scope": "machine-overridable",
-          "type": "string",
-          "description": "Path to the PuyaPy language server"
-        }
-      }
-    },
-    "commands": [
-      {
-        "command": "puyapy.restartLanguageServer",
-        "title": "Restart Language Server",
-        "category": "PuyaPy"
-      }
-    ]
-  },
   "scripts": {
-    "check-types": "tsc --noEmit",
-    "build-dev": "rimraf dist && npm run check-types && node esbuild.js",
-    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.js --production",
-    "package": "npm run build-prod && vsce package",
-    "lint": "eslint src",
-    "lint:fix": "npm run lint -- --fix",
-    "pretest": "npm-run-all pretest:*",
-    "pretest:build-extension": "npm run build-dev",
-    "pretest:build-tests": "tsc -p . --outDir out",
-    "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/test/runTest\"",
-    "audit": "better-npm-audit audit -l moderate",
-    "pre-commit": "npm-run-all check-types lint:fix audit test"
+    "lint": "npm run lint --workspaces",
+    "audit": "npm run audit --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "create-release": "npm run create-release --workspaces"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@rimac-technology/semantic-release-monorepo": "^1.2.10",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "@types/vscode": "^1.95.0",
+    "@types/vscode": "^1.80.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
     "@vscode/test-electron": "^2.4.1",
@@ -68,75 +37,14 @@
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "glob": "^11.0.1",
+    "husky": "^9.1.7",
     "mocha": "^11.1.0",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^7.0.2",
     "rimraf": "^6.0.1",
+    "semantic-release": "^24.2.3",
     "semantic-release-export-data": "^1.0.1",
+    "semantic-release-vsce": "^6.0.6",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.0"
-  },
-  "dependencies": {
-    "@vscode/python-extension": "^1.0.5",
-    "vscode-languageclient": "^9.0.1"
-  },
-  "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": "beta"
-      },
-      {
-        "name": "do-not-delete"
-      }
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "build",
-              "release": "patch"
-            },
-            {
-              "type": "chore",
-              "release": "patch"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "build",
-                "section": "Dependencies and Other Build Updates",
-                "hidden": false
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/github",
-        {
-          "successComment": false,
-          "failTitle": false
-        }
-      ],
-      "semantic-release-export-data"
-    ]
   }
 }

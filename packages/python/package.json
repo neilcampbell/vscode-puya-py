@@ -1,0 +1,85 @@
+{
+  "name": "algorand-python-vscode",
+  "displayName": "Algorand Python",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Tooling to support building with Algorand Python",
+  "author": "Algorand Foundation",
+  "publisher": "AlgorandFoundation",
+  "license": "MIT",
+  "keywords": [
+    "algokit",
+    "algorand",
+    "avm",
+    "algorand python",
+    "python",
+    "algokit algorand python",
+    "puya",
+    "puyapy",
+    "algorand smart contracts"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "icon": "./images/icon.png",
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neilcampbell/vscode-puya-py.git"
+  },
+  "bugs": {
+    "url": "https://github.com/neilcampbell/vscode-puya-py/issues"
+  },
+  "scripts": {
+    "lint": "eslint src -c ../common/eslint.config.mjs",
+    "lint:fix": "npm run lint -- --fix",
+    "audit": "better-npm-audit audit -l moderate",
+    "build": "npm run build:prod",
+    "build:clean": "rimraf dist",
+    "build:check-types": "tsc --noEmit",
+    "build:dev": "run-s build:clean build:check-types && node ../common/esbuild.mjs",
+    "build:prod": "run-s build:clean build:check-types && node ../common/esbuild.mjs --production",
+    "test": "",
+    "create-release": "semantic-release-monorepo",
+    "pre-commit": "run-s build:check-types lint:fix audit test",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@vscode/python-extension": "^1.0.5"
+  },
+  "devDependencies": {},
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:python",
+    "onCommand:extension.algorandPython.restartLanguageServer"
+  ],
+  "workspaceTrust": {
+    "request": "never"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "algorandPython.restartLanguageServer",
+        "title": "Restart Language Server",
+        "category": "Algorand Python"
+      }
+    ],
+    "configuration": {
+      "title": "Algorand Python",
+      "properties": {
+        "algorandPython.languageServerPath": {
+          "scope": "machine-overridable",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Optional path to the directory containing the PuyaPy language server."
+        }
+      }
+    }
+  }
+}

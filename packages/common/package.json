@@ -1,0 +1,20 @@
+{
+  "name": "common-vscode",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Algorand Foundation",
+  "publisher": "AlgorandFoundation",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src -c ../common/eslint.config.mjs",
+    "lint:fix": "npm run lint -- --fix",
+    "audit": "better-npm-audit audit -l moderate",
+    "build": "run-s build:*",
+    "build:check-types": "tsc --noEmit",
+    "test": "",
+    "create-release": "",
+    "pre-commit": "run-s build:check-types lint:fix audit test"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

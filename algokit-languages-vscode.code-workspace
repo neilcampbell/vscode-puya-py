@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "./",
+      "name": "ROOT"
+    },
+    {
+      "path": "packages/python"
+    },
+    {
+      "path": "packages/typescript"
+    },
+    {
+      "path": "packages/common"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "packages/": true
+    }
+  },
+  "extensions": {
+    "recommendations": ["joshx.workspace-terminals"]
+  }
+}
