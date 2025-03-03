@@ -34,20 +34,18 @@
     "url": "https://github.com/neilcampbell/vscode-puya-py/issues"
   },
   "scripts": {
-    "check-types": "tsc --noEmit",
-    "build-dev": "rimraf dist && npm run check-types && node esbuild.mjs",
-    "build-prod": "rimraf dist && npm run check-types && npm run lint && node esbuild.mjs --production",
-    "package": "npm run build-prod && vsce package",
-    "lint": "eslint src",
+    "lint": "eslint src -c ../common/eslint.config.mjs",
     "lint:fix": "npm run lint -- --fix",
-    "pretest": "npm-run-all pretest:*",
-    "pretest:build-extension": "npm run build-dev",
-    "pretest:build-tests": "tsc -p . --outDir out",
-    "test": "cross-env CODE_TESTS_WORKSPACE=\"testFixture\" node \"out/test/runTest\"",
     "audit": "better-npm-audit audit -l moderate",
-    "pre-commit": "npm-run-all check-types lint:fix audit test",
-    "semantic-test": "semantic-release-monorepo --branches enhancements",
-    "build": "npm run build-prod"
+    "build": "npm run build:prod",
+    "build:clean": "rimraf dist",
+    "build:check-types": "tsc --noEmit",
+    "build:dev": "run-s build:clean build:check-types && node ../common/esbuild.mjs",
+    "build:prod": "run-s build:clean build:check-types && node ../common/esbuild.mjs --production",
+    "test": "",
+    "create-release": "semantic-release-monorepo",
+    "pre-commit": "run-s build:check-types lint:fix audit test",
+    "package": "vsce package"
   },
   "dependencies": {
     "@vscode/python-extension": "^1.0.5"

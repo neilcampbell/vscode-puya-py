@@ -1,6 +1,8 @@
 import * as vscode from 'vscode'
 import * as assert from 'assert'
-import { getDocUri, activate, doc } from './helper'
+import { getDocUri, activate, doc } from '../../common/src/test/helper'
+
+const extensionId = 'AlgorandFoundation.algorand-typescript-vscode'
 
 // Skip until we integrate with pupapy
 suite.skip('Diagnostics', () => {
@@ -18,7 +20,7 @@ suite.skip('Diagnostics', () => {
   })
 
   test('Should fix the issue', async () => {
-    await activate(docUri)
+    await activate(extensionId, docUri)
 
     const range = toRange(0, 4, 0, 9)
 
@@ -43,7 +45,7 @@ function toRange(sLine: number, sChar: number, eLine: number, eChar: number) {
 }
 
 async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.Diagnostic[]) {
-  await activate(docUri)
+  await activate(extensionId, docUri)
 
   const actualDiagnostics = vscode.languages.getDiagnostics(docUri)
   assert.equal(actualDiagnostics.length, expectedDiagnostics.length)

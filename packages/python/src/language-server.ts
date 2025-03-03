@@ -8,7 +8,7 @@ import {
 } from 'vscode-languageclient/node'
 import { exec } from 'child_process'
 import { PythonConfig, getPythonEnvironment } from './environment'
-import { startedInDebugMode } from '../../common/utils/started-in-debug-mode'
+import { startedInDebugMode } from '../../common/src/utils/started-in-debug-mode'
 
 const languageServerName = 'Algorand Python Language Server'
 

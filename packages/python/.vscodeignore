@@ -18,3 +18,5 @@ images/**/*
 .releaserc.json
 ../../**
 ../**
+.mypy_cache
+test

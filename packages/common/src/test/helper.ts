@@ -9,9 +9,9 @@ export let platformEol: string
 /**
  * Activates the vscode-puya-py extension
  */
-export async function activate(docUri: vscode.Uri) {
+export async function activate(extensionId: string, docUri: vscode.Uri) {
   // The extensionId is `publisher.name` from package.json
-  const ext = vscode.extensions.getExtension('pat-dev.vscode-puya-py')!
+  const ext = vscode.extensions.getExtension(extensionId)!
   await ext.activate()
   try {
     doc = await vscode.workspace.openTextDocument(docUri)

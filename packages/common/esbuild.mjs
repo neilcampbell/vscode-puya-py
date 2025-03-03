@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import esbuild from 'esbuild'
 
 const production = process.argv.includes('--production')
@@ -22,7 +23,7 @@ const esbuildProblemMatcherPlugin = {
   },
 }
 
-export async function main() {
+async function main() {
   const ctx = await esbuild.context({
     entryPoints: ['src/extension.ts'],
     bundle: true,
@@ -42,3 +43,10 @@ export async function main() {
   await ctx.rebuild()
   await ctx.dispose()
 }
+
+main().catch((e) => {
+  // eslint-disable-next-line no-undef
+  console.error(e)
+  // eslint-disable-next-line no-undef
+  process.exit(1)
+})

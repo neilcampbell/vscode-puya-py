@@ -7,7 +7,7 @@ import {
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node'
-import { startedInDebugMode } from '../../common/utils/started-in-debug-mode'
+import { startedInDebugMode } from '../../common/src/utils/started-in-debug-mode'
 
 const languageServerName = 'Algorand TypeScript Language Server'
 
