@@ -46,12 +46,20 @@ jobs:
       - name: Build and Test (Algorand Python)
         uses: ./.github/actions/build-and-test
 
-      - name: Upload artifact
+      - name: Upload python build output
         if: ${{ github.ref_name == 'main' }}
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: 'dist'
+          name: python-dist
+          path: 'packages/python/dist'
+          if-no-files-found: error
+
+      - name: Upload typescript build output
+        if: ${{ github.ref_name == 'main' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: typescript-dist
+          path: 'packages/typescript/dist'
           if-no-files-found: error
 
   create-release:
@@ -68,11 +76,17 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
 
-      - name: Download artifact
+      - name: Download python build output
         uses: actions/download-artifact@v4
         with:
-          name: dist
-          path: dist
+          name: python-dist
+          path: 'packages/python/dist'
+
+      - name: Download typescript build output
+        uses: actions/download-artifact@v4
+        with:
+          name: typescript-dist
+          path: 'packages/typescript/dist'
 
       - name: Create and publish release
         uses: ./.github/actions/create-release
