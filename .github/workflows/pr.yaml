@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: write
-  issues: read
 
 jobs:
   build-and-test:
@@ -31,20 +30,16 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build-and-test
 
-      - run: ls -la
-      - run: ls ./packages/python/dist
-      - run: ls ./packages/typescript/dist
-
       - name: Upload python build output
         uses: actions/upload-artifact@v4
         with:
-          name: python-dist
+          name: test-python-dist
           path: 'packages/python/dist'
           if-no-files-found: error
 
       - name: Upload typescript build output
         uses: actions/upload-artifact@v4
         with:
-          name: typescript-dist
+          name: test-typescript-dist
           path: 'packages/typescript/dist'
           if-no-files-found: error
