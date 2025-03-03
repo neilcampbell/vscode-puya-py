@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/actions/build-and-test
 
       - name: Upload python build output
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'main' && matrix.os == 'ubuntu-latest' }}
         uses: actions/upload-artifact@v4
         with:
           name: python-dist
@@ -55,7 +55,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload typescript build output
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'main' && matrix.os == 'ubuntu-latest' }}
         uses: actions/upload-artifact@v4
         with:
           name: typescript-dist
